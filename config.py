@@ -2,5 +2,5 @@
 WHISPER_MODEL = "medium"
 SERVER_PORT = 5123
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 UPDATE_CHECK_URL = "https://raw.githubusercontent.com/oliveirapattrick/feed-filter/main/version.json"

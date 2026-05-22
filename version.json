@@ -1,1 +1,1 @@
-{"download_url":"https://github.com/oliveirapattrick/feed-filter/releases/latest","version":"1.2.0","notes":"fix: inicializacao instantanea (onedir), mutex anti-multiplas-instancias, splash de carregamento e notificacao de atualizacao confiavel"}
+{"download_url":"https://github.com/oliveirapattrick/feed-filter/releases/latest","version":"1.2.1","notes":"extensao: botoes sempre visiveis no feed; botao Salvar transcricao restaurado no modal"}
