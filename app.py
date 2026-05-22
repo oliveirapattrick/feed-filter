@@ -1,3 +1,4 @@
+import ctypes
 import os
 import sys
 import subprocess
@@ -10,6 +11,16 @@ from PIL import Image
 import pystray
 
 BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+
+_MUTEX_NAME = "FeedFilterSingleInstance"
+_mutex_handle = None
+
+
+def _acquire_single_instance_mutex():
+    """Return True if this is the first instance, False if another is already running."""
+    global _mutex_handle
+    _mutex_handle = ctypes.windll.kernel32.CreateMutexW(None, True, _MUTEX_NAME)
+    return ctypes.windll.kernel32.GetLastError() != 183  # 183 = ERROR_ALREADY_EXISTS
 
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
@@ -116,19 +127,36 @@ def _build_menu(icon, update_url=None, update_version=None):
     return pystray.Menu(*items)
 
 
-def _check_for_update(icon):
-    """Check GitHub for a newer version and notify if found."""
-    import time
-    # Wait for icon to be ready first
-    for _ in range(20):
-        if icon.visible:
-            break
-        time.sleep(0.15)
+def _show_splash():
+    """Show a brief 'loading' message box, then close it automatically after the tray icon appears."""
+    ctypes.windll.user32.MessageBoxW(
+        0,
+        "Feed Filter está iniciando...\n\nO ícone aparecerá na bandeja do sistema em instantes.",
+        "Feed Filter",
+        0x40,  # MB_ICONINFORMATION
+    )
+
+
+def _win_notify(title: str, msg: str):
+    """Reliable tray balloon via Shell_NotifyIcon or fallback MessageBox."""
     try:
-        icon.notify("Servidor rodando na porta 5123", "Feed Filter iniciado")
+        import pystray._win32 as _w32  # noqa: F401 — just check it exists
+        if _icon_ref and _icon_ref.visible:
+            _icon_ref.notify(msg, title)
+            return
     except Exception:
         pass
-    # Version check (silently skip if offline)
+    ctypes.windll.user32.MessageBoxW(0, msg, title, 0x40)
+
+
+def _check_for_update(icon):
+    """Show startup notification and check GitHub for a newer version."""
+    import time
+    for _ in range(60):
+        if icon.visible:
+            break
+        time.sleep(0.25)
+    _win_notify("Feed Filter iniciado", f"Servidor rodando na porta {config.SERVER_PORT}")
     try:
         with urllib.request.urlopen(config.UPDATE_CHECK_URL, timeout=5) as resp:
             data = json.loads(resp.read().decode())
@@ -136,12 +164,10 @@ def _check_for_update(icon):
         if remote != config.VERSION:
             notes = data.get("notes", "")
             dl = data.get("download_url", "")
-            msg = f"Versão {remote} disponível. {notes}"
-            try:
-                icon.notify(msg, "Feed Filter — Atualização disponível")
-            except Exception:
-                pass
-            # Add update menu item dynamically
+            _win_notify(
+                "Feed Filter — Atualização disponível",
+                f"Versão {remote} disponível. {notes}",
+            )
             icon.menu = _build_menu(icon, update_url=dl, update_version=remote)
     except Exception:
         pass
@@ -154,6 +180,13 @@ def _notify_when_ready(icon):
 def main():
     global _flask_thread, _icon_ref
 
+    if not _acquire_single_instance_mutex():
+        return
+
+    # Show splash immediately so user gets feedback while tray icon loads
+    splash_thread = threading.Thread(target=_show_splash, daemon=True)
+    splash_thread.start()
+
     _flask_thread = threading.Thread(target=_run_flask, daemon=True)
     _flask_thread.start()
 
@@ -162,7 +195,6 @@ def main():
     _icon_ref = icon
     icon.menu = _build_menu(icon)
 
-    # Fire notification after icon is ready (separate thread)
     threading.Thread(target=_notify_when_ready, args=(icon,), daemon=True).start()
 
     icon.run()

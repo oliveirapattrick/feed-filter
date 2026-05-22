@@ -3,7 +3,7 @@
 a = Analysis(
     ['app.py'],
     pathex=['.'],
-    binaries=[],
+    binaries=[('ffmpeg.exe', '.')],
     datas=[
         ('icon.ico', '.'),
         ('config.py', '.'),
@@ -23,7 +23,6 @@ a = Analysis(
         'threading',
         'subprocess',
         'ctypes',
-        'engineio',
         'werkzeug',
         'werkzeug.serving',
         'werkzeug.debug',
@@ -42,10 +41,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
+    exclude_binaries=True,
     name='FeedFilter',
     debug=False,
     bootloader_ignore_signals=False,
@@ -53,4 +50,15 @@ exe = EXE(
     upx=True,
     console=False,
     icon='icon.ico',
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='FeedFilter',
 )

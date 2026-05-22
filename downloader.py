@@ -6,6 +6,13 @@ import yt_dlp
 
 import config
 
+
+def _ffmpeg_path() -> str:
+    # When running as a PyInstaller bundle, _MEIPASS points to the temp folder
+    # where bundled files are extracted. Otherwise, look next to this script.
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, "ffmpeg.exe")
+
 try:
     yt_dlp.update.run_update()
 except Exception:
@@ -44,10 +51,12 @@ def download_video(url: str) -> dict:
 
     outtmpl = os.path.join(folder, "%(uploader)s_%(id)s.%(ext)s")
 
+    ffmpeg = _ffmpeg_path()
     ydl_opts = {
         "outtmpl": outtmpl,
         "format": "bestvideo+bestaudio/best",
         "merge_output_format": "mp4",
+        "ffmpeg_location": ffmpeg,
         "ignoreerrors": True,
         "writesubtitles": False,
         "quiet": False,

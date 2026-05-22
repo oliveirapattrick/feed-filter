@@ -1,4 +1,4 @@
-# Feed Filter — Release automático
+﻿# Feed Filter — Release automático
 # Uso: .\release.ps1 -Version "1.1.0" -Notes "Descrição do que mudou"
 # O token é lido da variável de ambiente GITHUB_TOKEN (ou pedido interativamente)
 
@@ -9,7 +9,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $REPO = "oliveirapattrick/feed-filter"
-$EXE  = "dist\FeedFilter.exe"
+$DIST_DIR = "dist\FeedFilter"
+$ZIP_NAME = "FeedFilter.zip"
 
 # ── Token ────────────────────────────────────────────────────────────────────
 $token = $env:GITHUB_TOKEN
@@ -38,10 +39,11 @@ $vJson = @{ version = $Version; notes = $Notes; download_url = "https://github.c
 Ok "version.json atualizado"
 
 # ── 2. Build PyInstaller ───────────────────────────────────────────────────────
-Step "2/6  Rebuilding FeedFilter.exe (pode demorar ~5 min)"
+Step "2/6  Rebuilding FeedFilter (onedir, pode demorar ~5 min)"
 python -m PyInstaller feed_filter.spec --clean --noconfirm
-if (-not (Test-Path $EXE)) { Err "Exe não encontrado em $EXE após o build" }
-Ok "Build concluído — $([math]::Round((Get-Item $EXE).Length/1MB,1)) MB"
+if (-not (Test-Path "$DIST_DIR\FeedFilter.exe")) { Err "Exe não encontrado em $DIST_DIR\FeedFilter.exe após o build" }
+$sizeMB = [math]::Round((Get-ChildItem $DIST_DIR -Recurse | Measure-Object Length -Sum).Sum / 1MB, 1)
+Ok "Build concluído — $sizeMB MB total"
 
 # ── 3. Git commit + push ───────────────────────────────────────────────────────
 Step "3/6  Commit e push"
@@ -80,14 +82,12 @@ function Upload($filePath, $assetName, $contentType) {
     Ok "$assetName enviado"
 }
 
-# FeedFilter.exe
-Write-Host "  Enviando FeedFilter.exe ($([math]::Round((Get-Item $EXE).Length/1MB,1)) MB)..." -ForegroundColor Gray
-$exeUrl = "https://uploads.github.com/repos/$REPO/releases/$($release.id)/assets?name=FeedFilter.exe"
-$exeHdrs = @{ Authorization = "token $token"; "Content-Type" = "application/octet-stream" }
-$exeBytes = [System.IO.File]::ReadAllBytes((Resolve-Path $EXE))
-$exeUp = Invoke-WebRequest -Uri $exeUrl -Method POST -Headers $exeHdrs -Body $exeBytes -UseBasicParsing -TimeoutSec 600
-if ($exeUp.StatusCode -ne 201) { Err "Upload do exe falhou — status $($exeUp.StatusCode)" }
-Ok "FeedFilter.exe enviado"
+# FeedFilter.zip (pasta onedir)
+if (Test-Path $ZIP_NAME) { Remove-Item $ZIP_NAME -Force }
+Compress-Archive -Path $DIST_DIR -DestinationPath $ZIP_NAME -Force
+$zipMB = [math]::Round((Get-Item $ZIP_NAME).Length / 1MB, 1)
+Write-Host "  Enviando $ZIP_NAME ($zipMB MB)..." -ForegroundColor Gray
+Upload $ZIP_NAME $ZIP_NAME "application/zip"
 
 # feed-extension.zip
 Compress-Archive -Path "feed-extension" -DestinationPath "feed-extension.zip" -Force
@@ -103,5 +103,6 @@ Write-Host "  Versão   : $Version" -ForegroundColor White
 Write-Host "  Release  : https://github.com/$REPO/releases/tag/v$Version" -ForegroundColor White
 Write-Host "  Download : https://github.com/$REPO/releases/latest" -ForegroundColor White
 Write-Host ""
+Write-Host "  Asset    : $ZIP_NAME (extrair pasta e executar FeedFilter\FeedFilter.exe)" -ForegroundColor DarkGray
 Write-Host "  Os usuários serão notificados automaticamente ao abrir o app." -ForegroundColor DarkGray
 Write-Host ""
