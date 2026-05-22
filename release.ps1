@@ -67,16 +67,34 @@ $release = Invoke-WebRequest `
     ConvertFrom-Json
 Ok "Release criado — ID $($release.id)"
 
-# ── 5. Upload exe ──────────────────────────────────────────────────────────────
-Step "5/6  Enviando FeedFilter.exe para o Release"
-$uploadUrl = "https://uploads.github.com/repos/$REPO/releases/$($release.id)/assets?name=FeedFilter.exe"
-$uploadHeaders = @{ Authorization = "token $token"; "Content-Type" = "application/octet-stream" }
-$bytes = [System.IO.File]::ReadAllBytes((Resolve-Path $EXE))
-Write-Host "  Enviando $([math]::Round($bytes.Length/1MB,1)) MB..." -ForegroundColor Gray
-$up = Invoke-WebRequest -Uri $uploadUrl -Method POST -Headers $uploadHeaders -Body $bytes `
-    -UseBasicParsing -TimeoutSec 600
-if ($up.StatusCode -ne 201) { Err "Upload falhou — status $($up.StatusCode)" }
-Ok "Exe enviado"
+# ── 5. Upload assets ──────────────────────────────────────────────────────────
+Step "5/6  Enviando arquivos para o Release"
+
+function Upload($filePath, $assetName, $contentType) {
+    $url = "https://uploads.github.com/repos/$REPO/releases/$($release.id)/assets?name=$assetName"
+    $hdrs = @{ Authorization = "token $token"; "Content-Type" = $contentType }
+    $data = [System.IO.File]::ReadAllBytes((Resolve-Path $filePath))
+    Write-Host "  Enviando $assetName ($([math]::Round($data.Length/1KB,1)) KB)..." -ForegroundColor Gray
+    $r = Invoke-WebRequest -Uri $url -Method POST -Headers $hdrs -Body $data -UseBasicParsing -TimeoutSec 600
+    if ($r.StatusCode -ne 201) { Err "Upload de $assetName falhou — status $($r.StatusCode)" }
+    Ok "$assetName enviado"
+}
+
+# FeedFilter.exe
+Write-Host "  Enviando FeedFilter.exe ($([math]::Round((Get-Item $EXE).Length/1MB,1)) MB)..." -ForegroundColor Gray
+$exeUrl = "https://uploads.github.com/repos/$REPO/releases/$($release.id)/assets?name=FeedFilter.exe"
+$exeHdrs = @{ Authorization = "token $token"; "Content-Type" = "application/octet-stream" }
+$exeBytes = [System.IO.File]::ReadAllBytes((Resolve-Path $EXE))
+$exeUp = Invoke-WebRequest -Uri $exeUrl -Method POST -Headers $exeHdrs -Body $exeBytes -UseBasicParsing -TimeoutSec 600
+if ($exeUp.StatusCode -ne 201) { Err "Upload do exe falhou — status $($exeUp.StatusCode)" }
+Ok "FeedFilter.exe enviado"
+
+# feed-extension.zip
+Compress-Archive -Path "feed-extension" -DestinationPath "feed-extension.zip" -Force
+Upload "feed-extension.zip" "feed-extension.zip" "application/zip"
+
+# guia_instalacao.html
+Upload "guia_instalacao.html" "guia_instalacao.html" "text/html"
 
 # ── 6. Resumo ──────────────────────────────────────────────────────────────────
 Step "6/6  Concluído!"
