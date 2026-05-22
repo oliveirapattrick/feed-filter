@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Feed Filter — Guia de Instalação</title>
+<title>Feed Filter — Guia</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;800&display=swap');
 
@@ -34,7 +34,7 @@
   .container { max-width: 820px; margin: 0 auto; }
 
   /* ── HEADER ── */
-  .header { margin-bottom: 64px; }
+  .header { margin-bottom: 40px; }
 
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
@@ -62,6 +62,42 @@
     max-width: 500px;
   }
 
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 48px;
+    width: fit-content;
+  }
+
+  .tab-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
   /* ── PROGRESS ── */
   .progress-bar-wrap {
     background: var(--surface);
@@ -71,7 +107,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
 
   .progress-label {
@@ -83,16 +119,14 @@
   }
 
   .bar-bg {
-    flex: 1;
-    height: 5px;
+    flex: 1; height: 5px;
     background: var(--border);
     border-radius: 99px;
     overflow: hidden;
   }
 
   .bar-fill {
-    height: 100%;
-    width: 0%;
+    height: 100%; width: 0%;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     border-radius: 99px;
     transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -100,39 +134,32 @@
 
   .progress-count {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    white-space: nowrap;
+    font-size: 13px; font-weight: 700;
+    color: var(--accent); white-space: nowrap;
   }
 
   /* ── SECTION HEADER ── */
   .section-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
   }
 
   .section-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: 10px; letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-weight: 700;
+    padding: 4px 10px; border-radius: 4px; font-weight: 700;
   }
 
-  .tag-app    { background: #150f2a; color: var(--accent); border: 1px solid #2a1f4a; }
-  .tag-ext    { background: #0f1e1a; color: var(--accent2); border: 1px solid #1a3a30; }
-  .tag-done   { background: var(--done-bg); color: var(--done-accent); border: 1px solid var(--done-border); }
+  .tag-app  { background: #150f2a; color: var(--accent);  border: 1px solid #2a1f4a; }
+  .tag-ext  { background: #0f1e1a; color: var(--accent2); border: 1px solid #1a3a30; }
+  .tag-use  { background: #0f1520; color: #60a0f0;        border: 1px solid #1a3050; }
+  .tag-upd  { background: #1a0f10; color: #f06080;        border: 1px solid #3a1f28; }
 
   .section-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
 
-  /* ── STEP CARD ── */
+  /* ── STEP / FEATURE CARD ── */
   .step {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -150,57 +177,40 @@
   }
 
   .step-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    display: flex; align-items: center; gap: 14px;
     padding: 18px 20px;
-    cursor: pointer;
-    user-select: none;
+    cursor: pointer; user-select: none;
   }
 
   .step-num {
-    width: 34px; height: 34px;
-    border-radius: 9px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--surface2); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; font-weight: 700;
-    color: var(--muted);
-    flex-shrink: 0;
-    transition: all 0.2s;
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    flex-shrink: 0; transition: all 0.2s;
   }
 
+  .step-num.icon { font-size: 17px; }
+
   .step.done .step-num {
-    background: var(--done-accent);
-    border-color: var(--done-accent);
-    color: #051005;
-    font-size: 16px;
+    background: var(--done-accent); border-color: var(--done-accent);
+    color: #051005; font-size: 16px;
   }
 
   .step-info { flex: 1; min-width: 0; }
 
-  .step-title {
-    font-size: 15px; font-weight: 600; letter-spacing: -0.2px;
-    margin-bottom: 2px;
-  }
-
+  .step-title { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 2px; }
   .step.done .step-title { text-decoration: line-through; color: var(--muted); }
 
-  .step-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--muted);
-  }
+  .step-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
 
   .chevron {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--surface2); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     color: var(--muted); font-size: 11px;
-    transition: all 0.2s;
-    flex-shrink: 0;
+    transition: all 0.2s; flex-shrink: 0;
   }
 
   .step.open .chevron {
@@ -229,11 +239,83 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 14px 16px;
-    font-size: 14px; line-height: 1.7;
-    color: #bbbbd8;
+    font-size: 14px; line-height: 1.75; color: #bbbbd8;
   }
 
   .info-box strong { color: var(--text); }
+  .info-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; background: #07070d;
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  /* ── FEATURE VISUAL BLOCK ── */
+  .feature-visual {
+    background: #07070d;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .feature-icon-big {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+
+  .feature-text h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+  }
+
+  .feature-text p {
+    font-size: 13px; line-height: 1.65; color: #9090b8;
+  }
+
+  /* ── STEPS INLINE (uso) ── */
+  .use-steps {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 4px;
+  }
+
+  .use-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .use-step-num {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .use-step p { font-size: 13px; line-height: 1.6; color: #bbbbd8; }
+  .use-step p strong { color: var(--text); }
+
+  /* ── BADGE ROW ── */
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 5px 10px;
+    border-radius: 6px; font-weight: 600;
+  }
+
+  .badge-purple { background: #1e1540; color: var(--accent); border: 1px solid #3a2a70; }
+  .badge-teal   { background: #0d2020; color: var(--accent2); border: 1px solid #1a4040; }
+  .badge-blue   { background: #0d1530; color: #60a0f0; border: 1px solid #1a3060; }
 
   /* ── CODE BLOCK ── */
   .code-wrap { position: relative; margin-bottom: 4px; }
@@ -244,25 +326,18 @@
     border-radius: 10px;
     padding: 16px 50px 16px 16px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px; line-height: 1.75;
-    color: #c0c0e0;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
+    font-size: 12.5px; line-height: 1.75; color: #c0c0e0;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
   }
 
   .copy-btn {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    position: absolute; top: 10px; right: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px; letter-spacing: 0.5px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
+    padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
   }
 
   .copy-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -272,12 +347,10 @@
   .callout {
     display: flex; gap: 10px; align-items: flex-start;
     border-radius: 10px; padding: 13px 15px;
-    font-size: 13px; line-height: 1.6;
-    margin-top: 12px;
+    font-size: 13px; line-height: 1.6; margin-top: 12px;
   }
 
   .callout-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
-
   .callout.tip     { background: #0f0f1e; border: 1px solid #2a2a50; color: #a0a0d8; }
   .callout.warn    { background: #1a1000; border: 1px solid #3a2a00; color: #c8a860; }
   .callout.success { background: var(--done-bg); border: 1px solid var(--done-border); color: #80c880; }
@@ -298,14 +371,12 @@
   .step.done .done-btn { background: var(--done-bg); border-color: var(--done-border); color: var(--done-accent); }
 
   /* ── DIVIDER ── */
-  hr { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
   /* ── FILE TREE ── */
   .tree {
-    background: #07070d;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
+    background: #07070d; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px; line-height: 1.9; color: #7070a0;
   }
@@ -317,16 +388,69 @@
   .final {
     background: linear-gradient(135deg, #150f2a, #0a0a14);
     border: 1px solid var(--accent);
-    border-radius: 16px;
-    padding: 36px;
-    text-align: center;
-    display: none;
+    border-radius: 16px; padding: 36px;
+    text-align: center; display: none;
   }
 
   .final h2 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
   .final p { color: var(--muted); font-size: 14px; line-height: 1.7; }
 
   .section-group { margin-bottom: 48px; }
+
+  /* ── POPUP MOCKUP ── */
+  .popup-mock {
+    background: #0a0a0f;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 280px;
+    overflow: hidden;
+    margin: 12px auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .pm-header {
+    background: #111118;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .pm-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 800; color: var(--text);
+  }
+
+  .pm-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--done-accent);
+    box-shadow: 0 0 6px var(--done-accent);
+  }
+
+  .pm-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+
+  .pm-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    display: block; margin-bottom: 4px;
+  }
+
+  .pm-select {
+    background: #1a1a24; border: 1px solid var(--border);
+    border-radius: 5px; color: #c0c0e0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 6px 10px; width: 100%;
+  }
+
+  .pm-btn {
+    background: var(--accent); color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    border: none; border-radius: 5px;
+    padding: 8px; width: 100%; cursor: default;
+  }
+
+  .pm-divider { height: 1px; background: var(--border); margin: 2px 0; }
 </style>
 </head>
 <body>
@@ -334,116 +458,117 @@
 
   <!-- HEADER -->
   <div class="header">
-    <div class="eyebrow">// guia de instalação</div>
+    <div class="eyebrow">// feed filter</div>
     <h1>Feed <em>Filter</em></h1>
-    <p class="subtitle">Siga os passos em ordem. Marque cada um como concluído antes de avançar. Tempo estimado: 5 minutos.</p>
+    <p class="subtitle">Guia completo de instalação e uso da ferramenta.</p>
   </div>
 
-  <!-- PROGRESS -->
-  <div class="progress-bar-wrap">
-    <span class="progress-label">progresso</span>
-    <div class="bar-bg"><div class="bar-fill" id="barFill"></div></div>
-    <span class="progress-count" id="barCount">0 / 5</span>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('install')">📦 Instalação</button>
+    <button class="tab-btn" onclick="switchTab('usage')">🎯 Como usar</button>
+    <button class="tab-btn" onclick="switchTab('updates')">🔄 Atualizações</button>
   </div>
 
-  <!-- ── PARTE 1: APP ── -->
-  <div class="section-group">
-    <div class="section-head">
-      <span class="section-tag tag-app">Parte 1</span>
-      <span class="section-title">App local (Windows)</span>
+  <!-- ══════════════════════════════════════════════════════
+       TAB: INSTALAÇÃO
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-install">
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-wrap">
+      <span class="progress-label">progresso</span>
+      <div class="bar-bg"><div class="bar-fill" id="barFill"></div></div>
+      <span class="progress-count" id="barCount">0 / 5</span>
     </div>
 
-    <!-- STEP 1 -->
-    <div class="step" id="s1">
-      <div class="step-header" onclick="toggle('s1')">
-        <div class="step-num">01</div>
-        <div class="step-info">
-          <div class="step-title">Baixar os arquivos</div>
-          <div class="step-sub">FeedFilter.exe · feed-extension/</div>
-        </div>
-        <div class="chevron">▼</div>
+    <!-- PARTE 1: APP -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-app">Parte 1</span>
+        <span class="section-title">App local (Windows)</span>
       </div>
-      <div class="step-body">
-        <div class="block-label">o que baixar</div>
-        <div class="info-box">
-          Acesse o link abaixo e baixe os dois itens:
-          <br><br>
-          <strong>FeedFilter.exe</strong> — o app que roda em segundo plano<br>
-          <strong>feed-extension.zip</strong> — a extensão do Chrome
-        </div>
 
-        <div class="block-label">link</div>
-        <div class="code-wrap">
-          <pre id="c1">https://github.com/oliveirapattrick/feed-filter/releases/latest</pre>
-          <button class="copy-btn" onclick="cp('c1',this)">copiar</button>
+      <div class="step" id="s1">
+        <div class="step-header" onclick="toggle('s1')">
+          <div class="step-num">01</div>
+          <div class="step-info">
+            <div class="step-title">Baixar os arquivos</div>
+            <div class="step-sub">FeedFilter.exe · feed-extension/</div>
+          </div>
+          <div class="chevron">▼</div>
         </div>
-
-        <div class="callout tip">
-          <span class="callout-icon">💡</span>
-          <span>Se o Windows bloquear o download, clique em <strong>Manter mesmo assim</strong> na barra do Chrome.</span>
+        <div class="step-body">
+          <div class="block-label">o que baixar</div>
+          <div class="info-box">
+            Acesse o link abaixo e baixe os dois itens:<br><br>
+            <strong>FeedFilter.exe</strong> — o app que roda em segundo plano<br>
+            <strong>Código-fonte (zip)</strong> — contém a pasta <code>feed-extension/</code>
+          </div>
+          <div class="block-label">link</div>
+          <div class="code-wrap">
+            <pre id="c1">https://github.com/oliveirapattrick/feed-filter/releases/latest</pre>
+            <button class="copy-btn" onclick="cp('c1',this)">copiar</button>
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Se o Windows bloquear o download, clique em <strong>Manter mesmo assim</strong> na barra do Chrome.</span>
+          </div>
+          <button class="done-btn" onclick="markDone('s1')"><span>✓</span> Concluído</button>
         </div>
+      </div>
 
-        <button class="done-btn" onclick="markDone('s1')"><span>✓</span> Concluído</button>
+      <div class="step" id="s2">
+        <div class="step-header" onclick="toggle('s2')">
+          <div class="step-num">02</div>
+          <div class="step-info">
+            <div class="step-title">Instalar e iniciar o app</div>
+            <div class="step-sub">FeedFilter.exe · bandeja do sistema</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="block-label">passo a passo</div>
+          <div class="info-box">
+            1. Mova o <strong>FeedFilter.exe</strong> para uma pasta permanente — por exemplo <code>C:\Programas\FeedFilter\</code><br><br>
+            2. Dê duplo clique no <strong>FeedFilter.exe</strong><br><br>
+            3. Se o Windows mostrar um aviso de segurança, clique em <strong>Mais informações → Executar mesmo assim</strong><br><br>
+            4. Um ícone roxo aparecerá na bandeja do sistema (canto inferior direito, perto do relógio)<br><br>
+            5. Clique com botão direito no ícone → <strong>Iniciar com o Windows</strong> para ativar o início automático
+          </div>
+          <div class="callout success">
+            <span class="callout-icon">✓</span>
+            <span>Você verá a notificação <strong>"Feed Filter iniciado — Servidor rodando na porta 5123"</strong> quando estiver funcionando.</span>
+          </div>
+          <button class="done-btn" onclick="markDone('s2')"><span>✓</span> Concluído</button>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 2 -->
-    <div class="step" id="s2">
-      <div class="step-header" onclick="toggle('s2')">
-        <div class="step-num">02</div>
-        <div class="step-info">
-          <div class="step-title">Instalar e iniciar o app</div>
-          <div class="step-sub">FeedFilter.exe · bandeja do sistema</div>
-        </div>
-        <div class="chevron">▼</div>
+    <!-- PARTE 2: EXTENSÃO -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-ext">Parte 2</span>
+        <span class="section-title">Extensão do Chrome</span>
       </div>
-      <div class="step-body">
-        <div class="block-label">passo a passo</div>
-        <div class="info-box">
-          1. Mova o <strong>FeedFilter.exe</strong> para uma pasta permanente — por exemplo <code>C:\Programas\FeedFilter\</code><br><br>
-          2. Dê duplo clique no <strong>FeedFilter.exe</strong><br><br>
-          3. Se o Windows mostrar um aviso de segurança, clique em <strong>Mais informações → Executar mesmo assim</strong><br><br>
-          4. Um ícone roxo aparecerá na bandeja do sistema (canto inferior direito, perto do relógio)<br><br>
-          5. Clique com botão direito no ícone → <strong>Iniciar com o Windows</strong> para ativar o início automático
+
+      <div class="step" id="s3">
+        <div class="step-header" onclick="toggle('s3')">
+          <div class="step-num">03</div>
+          <div class="step-info">
+            <div class="step-title">Extrair a extensão</div>
+            <div class="step-sub">feed-extension/ · pasta permanente</div>
+          </div>
+          <div class="chevron">▼</div>
         </div>
-
-        <div class="callout success">
-          <span class="callout-icon">✓</span>
-          <span>Você verá a notificação <strong>"Feed Filter iniciado — Servidor rodando na porta 5123"</strong> quando estiver funcionando.</span>
-        </div>
-
-        <button class="done-btn" onclick="markDone('s2')"><span>✓</span> Concluído</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PARTE 2: EXTENSÃO ── -->
-  <div class="section-group">
-    <div class="section-head">
-      <span class="section-tag tag-ext">Parte 2</span>
-      <span class="section-title">Extensão do Chrome</span>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step" id="s3">
-      <div class="step-header" onclick="toggle('s3')">
-        <div class="step-num">03</div>
-        <div class="step-info">
-          <div class="step-title">Descompactar a extensão</div>
-          <div class="step-sub">feed-extension.zip · pasta permanente</div>
-        </div>
-        <div class="chevron">▼</div>
-      </div>
-      <div class="step-body">
-        <div class="block-label">importante</div>
-        <div class="info-box">
-          A pasta da extensão precisa ficar em um local <strong>permanente</strong> — se você mover ou apagar depois de instalar, a extensão vai parar de funcionar.
-          <br><br>
-          Sugestão: extraia em <code>C:\Programas\FeedFilter\feed-extension\</code>
-        </div>
-
-        <div class="block-label">estrutura esperada</div>
-        <div class="tree">
+        <div class="step-body">
+          <div class="block-label">importante</div>
+          <div class="info-box">
+            Extraia o zip baixado e localize a pasta <code>feed-extension/</code> dentro dele. Mova-a para um local <strong>permanente</strong> — se você mover ou apagar depois de instalar, a extensão vai parar de funcionar.<br><br>
+            Sugestão: <code>C:\Programas\FeedFilter\feed-extension\</code>
+          </div>
+          <div class="block-label">estrutura esperada</div>
+          <div class="tree">
 <span class="dir">feed-extension/</span>
 ├── <span class="file-hl">manifest.json</span>
 ├── background.js
@@ -451,144 +576,488 @@
 ├── <span class="dir">content/</span>
 │   └── instagram.js
 └── <span class="dir">shared/</span>
+          </div>
+          <button class="done-btn" onclick="markDone('s3')"><span>✓</span> Concluído</button>
         </div>
-
-        <button class="done-btn" onclick="markDone('s3')"><span>✓</span> Concluído</button>
       </div>
-    </div>
 
-    <!-- STEP 4 -->
-    <div class="step" id="s4">
-      <div class="step-header" onclick="toggle('s4')">
-        <div class="step-num">04</div>
-        <div class="step-info">
-          <div class="step-title">Carregar a extensão no Chrome</div>
-          <div class="step-sub">chrome://extensions · modo desenvolvedor</div>
+      <div class="step" id="s4">
+        <div class="step-header" onclick="toggle('s4')">
+          <div class="step-num">04</div>
+          <div class="step-info">
+            <div class="step-title">Carregar a extensão no Chrome</div>
+            <div class="step-sub">chrome://extensions · modo desenvolvedor</div>
+          </div>
+          <div class="chevron">▼</div>
         </div>
-        <div class="chevron">▼</div>
+        <div class="step-body">
+          <div class="block-label">passo a passo</div>
+          <div class="info-box">
+            1. Abra o Chrome e acesse:
+          </div>
+          <div class="code-wrap" style="margin-top:8px">
+            <pre id="c2">chrome://extensions</pre>
+            <button class="copy-btn" onclick="cp('c2',this)">copiar</button>
+          </div>
+          <div class="info-box" style="margin-top:8px">
+            2. Ative o <strong>Modo do desenvolvedor</strong> (toggle no canto superior direito)<br><br>
+            3. Clique em <strong>Carregar sem compactação</strong><br><br>
+            4. Selecione a pasta <code>feed-extension/</code> que você extraiu<br><br>
+            5. A extensão <strong>Feed Filter</strong> aparecerá na lista com um ícone roxo
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">📌</span>
+            <span>Fixe a extensão na barra do Chrome: clique no ícone de quebra-cabeça → pin no Feed Filter.</span>
+          </div>
+          <button class="done-btn" onclick="markDone('s4')"><span>✓</span> Concluído</button>
+        </div>
       </div>
-      <div class="step-body">
-        <div class="block-label">passo a passo</div>
-        <div class="info-box">
-          1. Abra o Chrome e acesse:
+
+      <div class="step" id="s5">
+        <div class="step-header" onclick="toggle('s5')">
+          <div class="step-num">05</div>
+          <div class="step-info">
+            <div class="step-title">Testar o sistema</div>
+            <div class="step-sub">Instagram · botões · filtros</div>
+          </div>
+          <div class="chevron">▼</div>
         </div>
-
-        <div class="code-wrap" style="margin-top:8px">
-          <pre id="c2">chrome://extensions</pre>
-          <button class="copy-btn" onclick="cp('c2',this)">copiar</button>
-        </div>
-
-        <div class="info-box" style="margin-top:8px">
-          2. Ative o <strong>Modo do desenvolvedor</strong> (toggle no canto superior direito)<br><br>
-          3. Clique em <strong>Carregar sem compactação</strong><br><br>
-          4. Selecione a pasta <code>feed-extension/</code> que você extraiu<br><br>
-          5. A extensão <strong>Feed Filter</strong> aparecerá na lista com um ícone roxo
-        </div>
-
-        <div class="callout tip">
-          <span class="callout-icon">📌</span>
-          <span>Fixe a extensão na barra do Chrome clicando no ícone de peças de quebra-cabeça → pin no Feed Filter.</span>
-        </div>
-
-        <button class="done-btn" onclick="markDone('s4')"><span>✓</span> Concluído</button>
-      </div>
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="step" id="s5">
-      <div class="step-header" onclick="toggle('s5')">
-        <div class="step-num">05</div>
-        <div class="step-info">
-          <div class="step-title">Testar o sistema</div>
-          <div class="step-sub">Instagram · botões · filtros</div>
-        </div>
-        <div class="chevron">▼</div>
-      </div>
-      <div class="step-body">
-        <div class="block-label">checklist de teste</div>
-        <div class="info-box">
-          ☐ &nbsp;O ícone roxo do Feed Filter está na bandeja do sistema<br><br>
-          ☐ &nbsp;Abra um perfil no Instagram — botões <strong>⬇</strong> e <strong>🎙</strong> aparecem em cada post<br><br>
-          ☐ &nbsp;Clique no ícone da extensão — o popup abre e mostra <strong>"● Online"</strong> em verde<br><br>
-          ☐ &nbsp;Aplique um filtro de curtidas — o feed reordena os posts<br><br>
-          ☐ &nbsp;Clique em ⬇ em um vídeo — download aparece em <code>~/Downloads/FeedFilter/</code>
-        </div>
-
-        <div class="callout warn">
-          <span class="callout-icon">⚠️</span>
-          <span>Se os botões não aparecerem no Instagram, recarregue a extensão em <code>chrome://extensions</code> e atualize a página do Instagram.</span>
-        </div>
-
-        <button class="done-btn" onclick="markDone('s5')"><span>✓</span> Concluído</button>
-      </div>
-    </div>
-  </div>
-
-  <hr>
-
-  <!-- ATUALIZAÇÕES -->
-  <div class="section-group">
-    <div class="section-head">
-      <span class="section-tag tag-app">Atualizações</span>
-      <span class="section-title">Como atualizar quando sair uma versão nova</span>
-    </div>
-
-    <div class="step" id="su1">
-      <div class="step-header" onclick="toggle('su1')">
-        <div class="step-num">↑</div>
-        <div class="step-info">
-          <div class="step-title">Atualizar o app (FeedFilter.exe)</div>
-          <div class="step-sub">substituir o arquivo</div>
-        </div>
-        <div class="chevron">▼</div>
-      </div>
-      <div class="step-body">
-        <div class="info-box">
-          1. Clique com botão direito no ícone da bandeja → <strong>Encerrar</strong><br><br>
-          2. Baixe o novo <strong>FeedFilter.exe</strong> e substitua o arquivo antigo na mesma pasta<br><br>
-          3. Abra o novo <strong>FeedFilter.exe</strong>
+        <div class="step-body">
+          <div class="block-label">checklist de teste</div>
+          <div class="info-box">
+            ☐ &nbsp;O ícone roxo do Feed Filter está na bandeja do sistema<br><br>
+            ☐ &nbsp;Abra um perfil no Instagram — botões <strong>⬇</strong> e <strong>🎙</strong> aparecem em cada post<br><br>
+            ☐ &nbsp;Clique no ícone da extensão — o popup abre e mostra o ponto verde <strong>online</strong><br><br>
+            ☐ &nbsp;Aplique um filtro de curtidas — o feed reordena os posts<br><br>
+            ☐ &nbsp;Clique em ⬇ em um vídeo — download aparece em <code>~/Downloads/FeedFilter/</code>
+          </div>
+          <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>Se os botões não aparecerem no Instagram, recarregue a extensão em <code>chrome://extensions</code> e atualize a página do Instagram.</span>
+          </div>
+          <button class="done-btn" onclick="markDone('s5')"><span>✓</span> Concluído</button>
         </div>
       </div>
     </div>
 
-    <div class="step" id="su2">
-      <div class="step-header" onclick="toggle('su2')">
-        <div class="step-num">↑</div>
-        <div class="step-info">
-          <div class="step-title">Atualizar a extensão</div>
-          <div class="step-sub">substituir a pasta · recarregar</div>
-        </div>
-        <div class="chevron">▼</div>
-      </div>
-      <div class="step-body">
-        <div class="info-box">
-          1. Baixe o novo <strong>feed-extension.zip</strong><br><br>
-          2. Extraia e substitua todos os arquivos na pasta <code>feed-extension/</code><br><br>
-          3. Em <code>chrome://extensions</code>, clique no botão 🔄 de recarregar do Feed Filter
-        </div>
+    <!-- FINAL -->
+    <div class="final" id="finalBox">
+      <h2>Instalação concluída!</h2>
+      <p>Vá para a aba <strong>Como usar</strong> para aprender a usar todas as funcionalidades.<br>Qualquer dúvida, entre em contato com a equipe.</p>
+    </div>
 
-        <div class="callout tip">
-          <span class="callout-icon">💡</span>
-          <span>Você <strong>não precisa</strong> reinstalar a extensão — só substituir os arquivos e recarregar.</span>
+  </div><!-- /tab-install -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       TAB: COMO USAR
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-usage">
+
+    <!-- ANTES DE TUDO -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-use">Pré-requisito</span>
+        <span class="section-title">Antes de usar</span>
+      </div>
+      <div class="step" id="u0">
+        <div class="step-header" onclick="toggle('u0')">
+          <div class="step-num icon">✅</div>
+          <div class="step-info">
+            <div class="step-title">O app precisa estar rodando</div>
+            <div class="step-sub">ícone roxo na bandeja · servidor ativo</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="info-box">
+            Todas as funcionalidades (download, transcrição) dependem do app local.<br><br>
+            ☐ &nbsp;O ícone roxo <strong>F</strong> está visível na bandeja do sistema (canto inferior direito)<br><br>
+            ☐ &nbsp;O popup da extensão mostra o ponto <span style="color:#4ade80">●</span> <strong style="color:#4ade80">verde</strong> no canto superior direito<br><br>
+            Se o ponto estiver vermelho, abra o <strong>FeedFilter.exe</strong> e aguarde a notificação de inicialização.
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- FINAL -->
-  <div class="final" id="finalBox">
-    <h2>Tudo pronto! 🎉</h2>
-    <p>O Feed Filter está instalado e funcionando.<br>Qualquer dúvida, entre em contato com a equipe.</p>
-  </div>
+    <!-- FUNCIONALIDADE 1: FILTRAR -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-use">Funcionalidade 1</span>
+        <span class="section-title">Filtrar e ordenar o feed</span>
+      </div>
 
-</div>
+      <div class="step" id="u1">
+        <div class="step-header" onclick="toggle('u1')">
+          <div class="step-num icon">🎯</div>
+          <div class="step-info">
+            <div class="step-title">Como filtrar posts de um perfil</div>
+            <div class="step-sub">curtidas · views · comentários · data</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="block-label">o que faz</div>
+          <div class="feature-visual">
+            <div class="feature-icon-big">🎯</div>
+            <div class="feature-text">
+              <h3>Reordena o feed do Instagram por métricas reais</h3>
+              <p>Esconde o feed original e exibe os posts na ordem que você definir — por curtidas, views, comentários ou data. Ideal para encontrar os conteúdos de melhor desempenho de um perfil rapidamente.</p>
+            </div>
+          </div>
+
+          <div class="block-label">passo a passo</div>
+          <div class="use-steps">
+            <div class="use-step">
+              <div class="use-step-num">1</div>
+              <p>Abra o <strong>perfil de um usuário</strong> no Instagram e role o feed para baixo para carregar os posts que deseja analisar</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">2</div>
+              <p>Clique no <strong>ícone do Feed Filter</strong> na barra do Chrome para abrir o popup</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">3</div>
+              <p>Selecione as opções:<br>
+              • <strong>Tipo</strong> — Todos / Posts / Reels<br>
+              • <strong>Ordenar por</strong> — Mais curtidas / Views / Comentários / Mais recentes / Mais antigos<br>
+              • <strong>Quantidade</strong> — quantos posts exibir (12 / 24 / 50 / 100 / 200)</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">4</div>
+              <p>Clique em <strong>Aplicar Filtros</strong> — o feed será reordenado instantaneamente</p>
+            </div>
+          </div>
+
+          <div class="block-label">popup de filtros</div>
+          <div class="popup-mock">
+            <div class="pm-header">
+              <span class="pm-title">Feed Filter</span>
+              <div class="pm-dot"></div>
+            </div>
+            <div class="pm-body">
+              <div>
+                <span class="pm-label">Tipo</span>
+                <div class="pm-select">Todos</div>
+              </div>
+              <div>
+                <span class="pm-label">Ordenar por</span>
+                <div class="pm-select">Mais curtidas</div>
+              </div>
+              <div>
+                <span class="pm-label">Quantidade</span>
+                <div class="pm-select">50</div>
+              </div>
+              <button class="pm-btn">Aplicar Filtros</button>
+            </div>
+          </div>
+
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Quanto mais você rolar o perfil antes de filtrar, mais posts serão capturados. Role até onde precisar e só então aplique o filtro.</span>
+          </div>
+
+          <div class="block-label">resetar o feed</div>
+          <div class="info-box">
+            Um banner roxo aparece no topo do feed filtrado com o botão <strong>Resetar</strong>. Clique nele para voltar ao feed original do Instagram.<br><br>
+            Ou abra o popup → seção <strong>Baixar em Lote</strong> → botão <strong>✕ Limpar</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUNCIONALIDADE 2: DOWNLOAD -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-use">Funcionalidade 2</span>
+        <span class="section-title">Baixar vídeos</span>
+      </div>
+
+      <div class="step" id="u2">
+        <div class="step-header" onclick="toggle('u2')">
+          <div class="step-num icon">⬇️</div>
+          <div class="step-info">
+            <div class="step-title">Download individual</div>
+            <div class="step-sub">botão ⬇ em cada post</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="block-label">como usar</div>
+          <div class="use-steps">
+            <div class="use-step">
+              <div class="use-step-num">1</div>
+              <p>Abra qualquer perfil no Instagram — botões <strong>⬇</strong> e <strong>🎙</strong> aparecem automaticamente sobre cada post</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">2</div>
+              <p>Clique no botão <strong>⬇</strong> no post que deseja baixar</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">3</div>
+              <p>Aguarde — o botão mostra <strong>⏳</strong> durante o download e <strong>✓</strong> ao concluir</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">4</div>
+              <p>O arquivo salvo em: <code>C:\Users\{seu usuário}\Downloads\FeedFilter\</code></p>
+            </div>
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Para abrir a pasta de downloads rapidamente, clique com botão direito no ícone da bandeja → <strong>📁 Abrir pasta de downloads</strong>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" id="u3">
+        <div class="step-header" onclick="toggle('u3')">
+          <div class="step-num icon">📦</div>
+          <div class="step-info">
+            <div class="step-title">Download em lote</div>
+            <div class="step-sub">baixar todos os posts filtrados de uma vez</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="block-label">o que faz</div>
+          <div class="feature-visual">
+            <div class="feature-icon-big">📦</div>
+            <div class="feature-text">
+              <h3>Baixa todos os posts do filtro de uma vez</h3>
+              <p>Após aplicar um filtro, a lista de posts aparece no popup. Selecione quais quer baixar e dispara tudo com um clique.</p>
+            </div>
+          </div>
+
+          <div class="block-label">passo a passo</div>
+          <div class="use-steps">
+            <div class="use-step">
+              <div class="use-step-num">1</div>
+              <p><strong>Aplique um filtro primeiro</strong> (funcionalidade 1) — os posts filtrados ficam salvos automaticamente</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">2</div>
+              <p>Abra o popup do Feed Filter — a seção <strong>Baixar em Lote</strong> mostra a lista de posts</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">3</div>
+              <p>Marque ou desmarque posts individualmente, ou use <strong>Todos</strong> para selecionar/deselecionar tudo</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">4</div>
+              <p>Clique em <strong>⬇ Baixar selecionados</strong> — os downloads acontecem em sequência</p>
+            </div>
+          </div>
+
+          <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>Não feche o Chrome durante os downloads em lote. O processo roda em segundo plano mas precisa do navegador aberto.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUNCIONALIDADE 3: TRANSCRIÇÃO -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-use">Funcionalidade 3</span>
+        <span class="section-title">Transcrever vídeos</span>
+      </div>
+
+      <div class="step" id="u4">
+        <div class="step-header" onclick="toggle('u4')">
+          <div class="step-num icon">🎙️</div>
+          <div class="step-info">
+            <div class="step-title">Transcrição de um vídeo</div>
+            <div class="step-sub">botão 🎙 · texto completo · copiar</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="block-label">o que faz</div>
+          <div class="feature-visual">
+            <div class="feature-icon-big">🎙️</div>
+            <div class="feature-text">
+              <h3>Transcreve o áudio do vídeo para texto</h3>
+              <p>O app baixa o vídeo, processa com o modelo Whisper localmente (sem enviar para nenhum servidor externo) e exibe o texto na tela. Funciona em português e outros idiomas.</p>
+            </div>
+          </div>
+
+          <div class="block-label">passo a passo</div>
+          <div class="use-steps">
+            <div class="use-step">
+              <div class="use-step-num">1</div>
+              <p>Clique no botão <strong>🎙</strong> em qualquer post de vídeo ou reel</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">2</div>
+              <p>Aguarde — a transcrição pode levar de <strong>15 segundos a alguns minutos</strong> dependendo do tamanho do vídeo</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">3</div>
+              <p>Um modal aparece com o texto completo da transcrição</p>
+            </div>
+            <div class="use-step">
+              <div class="use-step-num">4</div>
+              <p>Clique em <strong>Copiar</strong> para copiar o texto ou <strong>✕</strong> para fechar</p>
+            </div>
+          </div>
+
+          <div class="badge-row">
+            <span class="badge badge-purple">Whisper (local)</span>
+            <span class="badge badge-teal">Sem internet extra</span>
+            <span class="badge badge-blue">Português · Inglês · Espanhol</span>
+          </div>
+
+          <div class="callout warn">
+            <span class="callout-icon">⏱️</span>
+            <span>Vídeos longos (mais de 5 minutos) podem demorar bastante. O botão ficará em estado de carregamento durante o processo — não clique novamente.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANDEJA DO SISTEMA -->
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-use">Funcionalidade 4</span>
+        <span class="section-title">Menu da bandeja do sistema</span>
+      </div>
+
+      <div class="step" id="u5">
+        <div class="step-header" onclick="toggle('u5')">
+          <div class="step-num icon">🖥️</div>
+          <div class="step-info">
+            <div class="step-title">O que tem no menu do ícone</div>
+            <div class="step-sub">botão direito no ícone roxo</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="info-box">
+            Clique com o <strong>botão direito</strong> no ícone roxo <strong>F</strong> na bandeja do sistema:
+            <br><br>
+            <strong>Feed Filter v1.0.0</strong> — versão atual (informativo)<br><br>
+            <strong>📁 Abrir pasta de downloads</strong> — abre o Explorer direto na pasta onde os vídeos são salvos<br><br>
+            <strong>Iniciar com o Windows</strong> — ativa/desativa o início automático. Um <strong>✓</strong> aparece quando está ativado<br><br>
+            <strong>🔄 Reiniciar servidor</strong> — reinicia o Flask internamente se algo travar (sem fechar o app)<br><br>
+            <strong>✕ Encerrar</strong> — fecha o Feed Filter completamente
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Se o popup da extensão mostrar ponto vermelho (offline), clique em <strong>🔄 Reiniciar servidor</strong> antes de fechar e reabrir o app.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-usage -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       TAB: ATUALIZAÇÕES
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-updates">
+
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-upd">Automático</span>
+        <span class="section-title">Notificação de nova versão</span>
+      </div>
+
+      <div class="step" id="up0">
+        <div class="step-header" onclick="toggle('up0')">
+          <div class="step-num icon">🔔</div>
+          <div class="step-info">
+            <div class="step-title">O app avisa quando há uma atualização</div>
+            <div class="step-sub">notificação Windows · menu da bandeja</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="info-box">
+            Ao iniciar, o Feed Filter verifica automaticamente se há uma versão nova.<br><br>
+            Se houver atualização disponível:<br><br>
+            • Uma <strong>notificação do Windows</strong> aparece no canto da tela<br>
+            • O menu da bandeja ganha um item <strong>⬆ Atualização X.X disponível!</strong> — clique nele para ir direto para a página de download
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>A verificação é silenciosa — se estiver offline ou não houver atualização, nada acontece.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-group">
+      <div class="section-head">
+        <span class="section-tag tag-upd">Manual</span>
+        <span class="section-title">Como atualizar quando sair uma versão nova</span>
+      </div>
+
+      <div class="step" id="up1">
+        <div class="step-header" onclick="toggle('up1')">
+          <div class="step-num icon">⚙️</div>
+          <div class="step-info">
+            <div class="step-title">Atualizar o app (FeedFilter.exe)</div>
+            <div class="step-sub">substituir o arquivo · reiniciar</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="info-box">
+            1. Clique com botão direito no ícone da bandeja → <strong>✕ Encerrar</strong><br><br>
+            2. Baixe o novo <strong>FeedFilter.exe</strong> em:
+          </div>
+          <div class="code-wrap" style="margin-top:8px">
+            <pre id="c3">https://github.com/oliveirapattrick/feed-filter/releases/latest</pre>
+            <button class="copy-btn" onclick="cp('c3',this)">copiar</button>
+          </div>
+          <div class="info-box" style="margin-top:8px">
+            3. Substitua o arquivo antigo pelo novo na mesma pasta<br><br>
+            4. Dê duplo clique no novo <strong>FeedFilter.exe</strong> para iniciar
+          </div>
+        </div>
+      </div>
+
+      <div class="step" id="up2">
+        <div class="step-header" onclick="toggle('up2')">
+          <div class="step-num icon">🔌</div>
+          <div class="step-info">
+            <div class="step-title">Atualizar a extensão</div>
+            <div class="step-sub">substituir arquivos · recarregar no Chrome</div>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="step-body">
+          <div class="info-box">
+            1. Baixe o novo código-fonte (zip) pelo link acima<br><br>
+            2. Extraia e <strong>substitua todos os arquivos</strong> na pasta <code>feed-extension/</code> (não delete a pasta, só os arquivos dentro)<br><br>
+            3. Acesse <code>chrome://extensions</code> e clique no botão <strong>🔄</strong> de recarregar ao lado do Feed Filter
+          </div>
+          <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Não precisa reinstalar a extensão — só substituir os arquivos e recarregar.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-updates -->
+
+</div><!-- /container -->
 
 <script>
   const TOTAL = 5;
 
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
   function toggle(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle('open');
+    document.getElementById(id).classList.toggle('open');
   }
 
   function markDone(id) {
@@ -597,13 +1066,13 @@
     el.classList.remove('open');
     const num = el.querySelector('.step-num');
     if (el.classList.contains('done')) num.textContent = '✓';
-    else num.textContent = id.replace('s','0');
+    else num.textContent = id.replace('s', '0');
     updateBar();
     save();
   }
 
   function updateBar() {
-    const done = document.querySelectorAll('.step.done[id^="s"]').length;
+    const done = document.querySelectorAll('#tab-install .step.done[id^="s"]').length;
     document.getElementById('barFill').style.width = (done / TOTAL * 100) + '%';
     document.getElementById('barCount').textContent = done + ' / ' + TOTAL;
     document.getElementById('finalBox').style.display = done >= TOTAL ? 'block' : 'none';
@@ -618,18 +1087,18 @@
 
   function save() {
     const done = [...document.querySelectorAll('.step.done')].map(e => e.id);
-    localStorage.setItem('ff_install', JSON.stringify(done));
+    localStorage.setItem('ff_guide', JSON.stringify(done));
   }
 
   function load() {
     try {
-      const saved = JSON.parse(localStorage.getItem('ff_install') || '[]');
+      const saved = JSON.parse(localStorage.getItem('ff_guide') || '[]');
       saved.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         el.classList.add('done');
         const num = el.querySelector('.step-num');
-        if (num) num.textContent = '✓';
+        if (num && !num.classList.contains('icon')) num.textContent = '✓';
       });
       updateBar();
     } catch(e) {}
