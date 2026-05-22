@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Feed Filter",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Filtra, baixa e transcreve posts do Instagram e TikTok",
   "action": {
     "default_popup": "popup.html",

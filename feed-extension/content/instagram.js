@@ -8,14 +8,8 @@ const STYLES = `
     display: flex;
     gap: 4px;
     z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: all;
-  }
-  /* Mostrar no hover do elemento pai */
-  *:hover > .sf-btn-container,
-  article:hover .sf-btn-container {
     opacity: 1;
+    pointer-events: all;
   }
   .sf-btn-container.sf-modal-btns {
     position: fixed;
@@ -259,6 +253,7 @@ function showModal(text) {
     <div class="sf-modal-footer">
       <span class="sf-modal-wordcount">${wordCount} palavras</span>
       <div class="sf-modal-actions">
+        <button class="sf-modal-btn" id="sf-save">💾 Salvar</button>
         <button class="sf-modal-btn primary" id="sf-copy">📋 Copiar</button>
       </div>
     </div>
@@ -272,6 +267,23 @@ function showModal(text) {
     navigator.clipboard.writeText(text).then(() => {
       copyBtn.textContent = "✅ Copiado!";
       setTimeout(() => { copyBtn.innerHTML = "📋 Copiar"; }, 2000);
+    });
+  });
+
+  const saveBtn = modal.querySelector("#sf-save");
+  saveBtn.addEventListener("click", () => {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "⏳ Salvando...";
+    const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    const filename = `transcricao_${ts}.txt`;
+    chrome.runtime.sendMessage({ action: "saveTranscription", text, filename }, (res) => {
+      if (res?.status === "ok") {
+        saveBtn.textContent = "✅ Salvo!";
+      } else {
+        saveBtn.textContent = "❌ Erro";
+        saveBtn.disabled = false;
+      }
+      setTimeout(() => { saveBtn.innerHTML = "💾 Salvar"; saveBtn.disabled = false; }, 3000);
     });
   });
 
