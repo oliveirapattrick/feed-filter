@@ -1,0 +1,22 @@
+# PyInstaller output
+dist/
+build/
+*.spec.bak
+__pycache__/
+*.pyc
+*.pyo
+
+# Python env
+venv/
+.env
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Dados locais
+cookies.txt
+downloads/
+
+# Node (se houver)
+node_modules/

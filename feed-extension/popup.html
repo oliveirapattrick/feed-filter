@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Feed Filter</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      background: #0a0a0f;
+      color: #e8e8f0;
+      font-family: sans-serif;
+      font-size: 14px;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid #2a2a3a;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-logo-icon {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .header-logo-icon span {
+      display: block;
+      height: 2px;
+      background: #7c6af7;
+      border-radius: 2px;
+    }
+
+    .header-logo-icon span:nth-child(1) { width: 18px; }
+    .header-logo-icon span:nth-child(2) { width: 13px; }
+    .header-logo-icon span:nth-child(3) { width: 8px; }
+
+    .header-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-title-group h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.01em;
+      color: #e8e8f0;
+      line-height: 1;
+    }
+
+    .header-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #666680;
+      line-height: 1;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #444;
+      flex-shrink: 0;
+    }
+    .status-dot.online {
+      background: #4ade80;
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+      animation: sf-status-pulse 2s ease-in-out infinite;
+    }
+    .status-dot.offline {
+      background: #f87171;
+    }
+
+    @keyframes sf-status-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); }
+      70%  { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+
+    /* ── Sections ── */
+    .section {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #7c6af7;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ── Inputs / Selects ── */
+    select {
+      width: 100%;
+      background: #111118;
+      border: 1px solid #2a2a3a;
+      border-radius: 6px;
+      color: #e8e8f0;
+      font-size: 13px;
+      padding: 8px 10px;
+      padding-right: 30px;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237c6af7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+    select:focus { border-color: #7c6af7; }
+    select option { background: #111118; }
+
+    /* ── Buttons ── */
+    .apply-btn {
+      width: 100%;
+      background: #7c6af7;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 0;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 2px;
+    }
+    .apply-btn:hover  { background: #9080ff; }
+    .apply-btn:active { background: #6a58e0; transform: scale(0.98); }
+    .apply-btn:disabled { opacity: 0.5; cursor: default; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: #2a2a3a;
+      margin: 0 16px;
+    }
+
+    /* ── Batch section ── */
+    .batch-empty {
+      color: #444460;
+      font-size: 13px;
+      text-align: center;
+      padding: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-style: italic;
+    }
+
+    #batch-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .batch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #batch-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7c6af7;
+    }
+
+    .batch-select-all-label {
+      font-size: 12px;
+      color: #aaa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .batch-select-all-label input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: #7c6af7;
+    }
+
+    .clear-btn {
+      background: none;
+      border: 1px solid #3a2a2a;
+      border-radius: 6px;
+      color: #f87171;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 4px 9px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .clear-btn:hover { background: #2a1010; border-color: #f87171; }
+
+    #batch-list {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border: 1px solid #2a2a3a;
+      border-radius: 6px;
+      padding: 6px;
+      background: #111118;
+    }
+
+    #batch-list::-webkit-scrollbar { width: 4px; }
+    #batch-list::-webkit-scrollbar-track { background: transparent; }
+    #batch-list::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 4px; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 10px 16px;
+      border-top: 1px solid #2a2a3a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #666680;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-left">
+      <div class="header-logo-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="header-title-group">
+        <h1>Feed Filter</h1>
+        <span class="header-subtitle">instagram</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot" id="statusDot"></div>
+    </div>
+  </header>
+
+  <!-- ── Seção Filtrar ── -->
+  <div class="section">
+    <span class="section-label">Filtrar</span>
+
+    <div>
+      <span class="section-label" style="color:#666680; font-size:9px;">Tipo</span>
+      <select id="contentType">
+        <option value="all">Todos</option>
+        <option value="posts">Posts</option>
+        <option value="reels">Reels</option>
+      </select>
+    </div>
+
+    <div>
+      <span class="section-label" style="color:#666680; font-size:9px;">Ordenar por</span>
+      <select id="sortBy">
+        <option value="likes">Mais curtidas</option>
+        <option value="views">Mais views</option>
+        <option value="comments">Mais comentários</option>
+        <option value="newest">Mais recentes</option>
+        <option value="oldest">Mais antigos</option>
+      </select>
+    </div>
+
+    <div>
+      <span class="section-label" style="color:#666680; font-size:9px;">Quantidade</span>
+      <select id="quantity">
+        <option value="12">12</option>
+        <option value="24">24</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+      </select>
+    </div>
+
+    <button class="apply-btn" id="applyBtn">Aplicar Filtros</button>
+  </div>
+
+  <!-- ── Divisor ── -->
+  <div class="divider"></div>
+
+  <!-- ── Seção Baixar em Lote ── -->
+  <div class="section">
+    <span class="section-label">Baixar em Lote</span>
+
+    <div id="batch-empty" class="batch-empty">Aplique um filtro primeiro.</div>
+
+    <div id="batch-content">
+      <div class="batch-header">
+        <span id="batch-count"></span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="batch-select-all-label">
+            <input type="checkbox" id="batch-select-all" checked>
+            Todos
+          </label>
+          <button class="clear-btn" id="clearListBtn">✕ Limpar</button>
+        </div>
+      </div>
+
+      <div id="batch-list"></div>
+
+      <button class="apply-btn" id="batchDownloadBtn">⬇ Baixar selecionados</button>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>Feed Filter v1.0</footer>
+
+  <script src="popup_scripts/popup.js"></script>
+</body>
+</html>
