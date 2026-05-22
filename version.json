@@ -1,1 +1,1 @@
-{"download_url":"https://github.com/oliveirapattrick/feed-filter/releases/latest","version":"1.1.0","notes":"fix: embutir ffmpeg no app para corrigir download de video (audio separado do video)"}
+{"download_url":"https://github.com/oliveirapattrick/feed-filter/releases/latest","version":"1.2.0","notes":"fix: inicializacao instantanea (onedir), mutex anti-multiplas-instancias, splash de carregamento e notificacao de atualizacao confiavel"}
