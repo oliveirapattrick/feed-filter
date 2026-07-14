@@ -17,12 +17,12 @@
   "content_scripts": [
     {
       "matches": ["https://www.instagram.com/*"],
-      "js": ["content/instagram.js"],
+      "js": ["shared/outlier.js", "shared/filters-modal.js", "content/instagram.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://www.tiktok.com/*"],
-      "js": ["content/tiktok.js"],
+      "js": ["shared/outlier.js", "shared/filters-modal.js", "content/tiktok.js"],
       "run_at": "document_idle"
     }
   ],
@@ -34,7 +34,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["shared/*", "content/xhr_interceptor.js"],
+      "resources": ["shared/*", "content/xhr_interceptor.js", "content/tiktok_fetch_interceptor.js"],
       "matches": ["<all_urls>"]
     }
   ],

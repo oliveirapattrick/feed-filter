@@ -1,5 +1,6 @@
 import hashlib
 import os
+import sys
 from datetime import datetime
 
 import requests as http_requests
@@ -9,6 +10,17 @@ from flask_cors import CORS
 import config
 import downloader
 import transcriber
+
+# Windows consoles often default to a legacy codepage (e.g. cp1252) that
+# can't encode characters like "→" used in log lines below. Force UTF-8 on
+# stdout/stderr so a log print never raises UnicodeEncodeError and takes
+# down an otherwise-successful request with it.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 app = Flask(__name__)
 # Server binds to 127.0.0.1 only, so wildcard CORS is safe — no external
@@ -21,7 +33,10 @@ ALLOWED_HOSTS = {"instagram.com", "tiktok.com"}
 
 def _log(method: str, path: str, status: int):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{ts}] {method} {path} → {status}")
+    try:
+        print(f"[{ts}] {method} {path} -> {status}")
+    except Exception:
+        pass
 
 
 def _validate_url(url: str) -> bool:
@@ -73,6 +88,27 @@ def transcribe_endpoint():
         return jsonify(dl)
 
     file_path = dl["file"]
+    result = transcriber.transcribe(file_path)
+    return jsonify(result)
+
+
+@app.route("/transcribe-blob", methods=["POST"])
+def transcribe_blob():
+    """Transcribes a video the extension already downloaded client-side
+    (fetched with the browser's own Instagram session) and uploaded here as
+    multipart form data — avoids needing yt-dlp/cookies for Instagram media
+    the extension can already fetch itself."""
+    file = request.files.get("file")
+    if not file or not file.filename:
+        return jsonify({"status": "error", "message": "Campo 'file' obrigatório"}), 400
+
+    folder = os.path.expanduser(config.DOWNLOAD_FOLDER)
+    os.makedirs(folder, exist_ok=True)
+
+    filename = os.path.basename(file.filename)
+    file_path = os.path.join(folder, filename)
+    file.save(file_path)
+
     result = transcriber.transcribe(file_path)
     return jsonify(result)
 

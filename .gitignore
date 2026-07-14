@@ -20,3 +20,8 @@ downloads/
 
 # Node (se houver)
 node_modules/
+
+# Material de investigação de terceiros / artefatos de build
+01 ARQUIVOS/
+*.zip
+ffmpeg.exe
